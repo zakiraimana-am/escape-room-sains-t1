@@ -1,0 +1,108 @@
+<!doctype html><html lang="ms"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Makmal X V2 — Escape Room Sains Tingkatan 1</title><style>
+:root{--bg:#091425;--panel:#14253e;--line:#395574;--text:#f2f8ff;--sub:#c5d5e7;--aqua:#71e7dc;--yellow:#ffe099;--green:#8df3b0;--red:#ffc0c0}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at top left,#233f58,var(--bg) 58%);font:16px/1.6 system-ui,-apple-system,Segoe UI,sans-serif;color:var(--text)}main{max-width:820px;margin:20px auto 45px;padding:0 14px}.hero,.panel{padding:22px;border:1px solid var(--line);background:var(--panel);border-radius:20px;margin:15px 0}.hero{background:linear-gradient(120deg,#264766,#11233a)}.eyebrow{color:var(--aqua);font-weight:800;letter-spacing:.12em;font-size:.8rem}h1{font-size:clamp(2.3rem,8vw,4rem);margin:0}h2{margin:4px 0 12px;font-size:1.45rem}.muted{color:var(--sub)}.stats{display:flex;flex-wrap:wrap;gap:9px}.pill{background:#23405b;padding:5px 12px;border-radius:99px;font-size:.85rem}.hide{display:none!important}label{font-weight:700;display:block;margin:10px 0 5px}input{width:100%;padding:13px;background:#0a1b30;color:#fff;border:1px solid #7a91ad;border-radius:10px;font:inherit}.btn,.choice{border-radius:11px;padding:13px 17px;font:inherit;cursor:pointer}button{font-weight:750}.btn{margin-top:14px;background:var(--aqua);border:0;color:#041925}.btn.alt{background:#294762;color:white;border:1px solid #7c9db7}.choice{width:100%;text-align:left;background:#223b55;color:white;border:1px solid #7692ae}.choice.selected{border:2px solid var(--aqua);background:#15576a}.choices{display:grid;gap:10px;margin:15px 0}.feedback{border-left:4px solid var(--yellow);background:#253e56;border-radius:8px;margin:14px 0;padding:12px}.feedback.ok{border-color:var(--green)}.feedback.no{border-color:var(--red)}details{background:#213850;padding:13px;border-radius:10px;margin-top:16px}summary{color:var(--yellow);font-weight:700;cursor:pointer}.meter{height:11px;background:#0a1b30;border-radius:20px;overflow:hidden;margin:10px 0 15px}.fill{height:100%;width:0%;background:linear-gradient(90deg,var(--aqua),var(--green));transition:width .2s}.bar{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}.tag{color:var(--yellow);font-weight:800}.big{font-size:2.6rem;text-align:center}.token{font-weight:900;font-size:2.3rem;color:var(--yellow)}.taskCard{padding:12px 16px;border:1px solid var(--line);border-radius:12px;background:#1b324c}.orderItem{display:flex;align-items:center;justify-content:space-between;gap:10px;background:#223b55;padding:10px;margin:8px 0;border-radius:10px}.orderItem div{flex:1}button.small{padding:7px 12px;background:#315e70;color:white;border:1px solid #83b5c1;border-radius:8px;cursor:pointer}.small:disabled{opacity:.3}.footer{text-align:center;color:#aec3da;font-size:.85rem;margin-top:25px}@media print{body{background:white;color:black}.btn,#startPane,#gamePane,#vaultPane,#reviewPane{display:none!important}#endPane{display:block!important;background:white;color:black;border-color:#aaa}.hero{display:none}}
+</style></head><body><main><header class="hero"><div class="eyebrow">ESCAPE ROOM DIGITAL • VERSI 4 • SISTEM MARKAH</div><h1>🔐 MAKMAL X</h1><p>Sistem keselamatan Makmal X telah rosak. Sebagai Agen Sains, kamu perlu menyelesaikan <strong>15 cabaran dalam 5 misi</strong> sebelum kod pintu akhir boleh diaktifkan.</p><div class="stats"><span class="pill">⏱️ Sasaran 50–60 minit</span><span class="pill">📱 Individu</span><span class="pill">🧩 15 cabaran</span><span class="pill">📚 Boleh rujuk buku teks</span><span class="pill">🏅 30 markah maksimum</span></div></header>
+<section class="panel" id="startPane"><h2>Selamat datang, Agen Sains!</h2><label for="player">Nama / nama samaran</label><input id="player" maxlength="50" placeholder="Contoh: Agen Dina"><p class="muted">Jawab mengikut urutan. Gunakan butang petunjuk apabila perlu. Setiap cabaran membenarkan sehingga 3 percubaan. Jawapan akan diterangkan selepas 3 kesilapan supaya kamu masih boleh meneruskan permainan.</p><button class="btn" id="start">Mulakan permainan →</button></section>
+<section class="panel hide" id="gamePane"><div class="bar"><span class="eyebrow" id="position"></span><span class="tag" id="progressLabel"></span><span class="tag" id="liveScore"></span></div><div class="meter"><div class="fill" id="fill"></div></div><h2 id="title"></h2><p id="scene"></p><div class="big" id="emoji"></div><div class="taskCard"><div class="eyebrow" id="taskType"></div><p id="prompt" style="font-weight:700"></p><div id="answerArea"></div></div><details id="hintBox"><summary>💡 Buka petunjuk</summary><p id="hint"></p></details><div id="feedback" class="feedback hide" role="status" aria-live="polite"></div><button class="btn" id="verify">Semak cabaran</button><button class="btn hide" id="advance">Cabaran seterusnya →</button><p class="muted" id="digits"></p></section>
+<section class="panel hide" id="digitPane"><h2>✅ Sistem berjaya dipulihkan!</h2><p id="systemMessage"></p><p>Digit keselamatan untuk misi ini:</p><div class="token" id="digitValue"></div><p class="muted">Ingat urutan digit. Kamu akan memerlukannya untuk membuka pintu akhir.</p><button class="btn" id="continue">Teruskan →</button></section>
+<section class="panel hide" id="vaultPane"><h2>🚪 Pintu Keluar Makmal X</h2><p>Lima sistem telah dipulihkan. Masukkan kod 5 digit mengikut urutan misi 1 hingga misi 5.</p><label for="code">Kod akhir</label><input id="code" maxlength="5" inputmode="numeric" autocomplete="off" placeholder="5 digit"><button class="btn" id="unlock">Buka pintu</button> <button class="btn alt" id="backToCodes">← Kembali: Lihat 5 kod</button><div class="feedback hide" id="vaultFeedback" role="status"></div></section>
+<section class="panel hide" id="reviewPane"><h2>🔎 Semak semula kod misi</h2><p>Ini ialah lima digit yang telah kamu kumpulkan. Bacanya mengikut urutan untuk membuka pintu akhir.</p><div id="codeReview"></div><button class="btn" id="returnToVault">Kembali ke pintu akhir →</button></section>
+<section class="panel hide" id="endPane"><div class="eyebrow">SIJIL PENYELESAIAN DIGITAL</div><h2>🏆 Misi Selesai!</h2><p id="certificate"></p><div class="taskCard"><h2 id="scoreFinal"></h2><p id="scoreInfo"></p><div id="scoreBreakdown"></div></div><p>Anda berjaya menyelesaikan <strong>15 cabaran dalam 5 misi</strong> dan membuka pintu Makmal X.</p><p><strong>Refleksi:</strong> Nyatakan satu konsep sains daripada permainan ini dan satu contoh penggunaannya dalam kehidupan seharian.</p><p><strong>Untuk guru:</strong> Tangkap layar sijil ini dan hantar melalui saluran yang diarahkan.</p><button class="btn" onclick="window.print()">Cetak / simpan sijil PDF</button><button class="btn alt" id="restart">Main semula</button></section><div class="footer">Aktiviti pengukuhan selepas peperiksaan • Sains Tingkatan 1 KSSM • Bab 1, 2, 5, 7 dan 8. Dibangunkan sebagai aktiviti, bukan soalan rasmi DSKP.</div></main>
+<script>
+const missions=[
+ {name:"Amaran Makmal",emoji:"🧪",scene:"Tiga kunci keselamatan makmal perlu diperiksa untuk membuka kabinet kecemasan.",digit:"7",tasks:[
+ {type:"single",q:"Sebuah botol memaparkan simbol api. Apakah langkah paling selamat?",options:["Dekatkan botol kepada penunu Bunsen","Jauhkan botol daripada sumber api dan haba","Hidu bahan untuk mengenal pasti kandungannya","Tuangkan bahan ke dalam sinki tanpa arahan"],correct:[1],hint:"Simbol api menunjukkan risiko yang berkaitan dengan nyalaan.",explain:"Bahan mudah terbakar perlu dijauhkan daripada sumber api atau haba."},
+ {type:"multi",q:"Pilih DUA peraturan yang selamat apabila berada di makmal sains.",options:["Baca arahan sebelum memulakan eksperimen","Makan dan minum ketika menjalankan eksperimen","Laporkan tumpahan bahan kimia kepada guru","Halakan tabung uji panas ke arah rakan"],correct:[0,2],hint:"Fikirkan cara mencegah kemalangan dan cara mendapatkan bantuan.",explain:"Membaca arahan dan melaporkan tumpahan kepada guru merupakan tindakan yang selamat."},
+ {type:"order",q:"Susun urutan tindakan apabila terlihat tumpahan bahan kimia yang tidak diketahui di atas meja makmal.",options:["Maklumkan kejadian kepada guru","Jauhkan diri dan elakkan menyentuh bahan","Ikut arahan guru untuk tindakan seterusnya"],correct:[1,0,2],hint:"Utamakan mengelakkan sentuhan, kemudian mendapatkan bantuan guru.",explain:"Elakkan sentuhan dahulu, laporkan kepada guru, kemudian ikut arahannya. Jangan cuba membersihkan bahan tidak diketahui sendiri."}
+ ]},
+ {name:"Sel yang Kehilangan Tenaga",emoji:"🔬",scene:"Robot NOVA mengecil ke saiz sel. Untuk pulang, ia perlu mengaktifkan tiga komponen pengetahuan tentang sel.",digit:"2",tasks:[
+ {type:"single",q:"Organel sel haiwan manakah ialah tempat utama respirasi sel?",options:["Nukleus","Mitokondrion","Kloroplas","Vakuol"],correct:[1],hint:"Lihat jadual fungsi organel sel haiwan dalam Bab 2.",explain:"Mitokondrion ialah tempat utama respirasi sel yang membebaskan tenaga."},
+ {type:"multi",q:"Pilih SEMUA struktur yang terdapat dalam sel tumbuhan biasa tetapi tiada dalam sel haiwan biasa.",options:["Dinding sel","Membran sel","Kloroplas","Sitoplasma"],correct:[0,2],hint:"Bandingkan dua rajah sel dalam buku teks.",explain:"Dinding sel dan kloroplas ialah struktur yang terdapat pada sel tumbuhan biasa, berbeza daripada sel haiwan biasa."},
+ {type:"single",q:"Sehelai daun menerima cahaya matahari, air dan karbon dioksida. Proses manakah membolehkan tumbuhan menghasilkan glukosa?",options:["Respirasi sel","Fotosintesis","Penyejatan","Pembakaran"],correct:[1],hint:"Proses ini berlaku dalam bahagian hijau tumbuhan dengan bantuan cahaya.",explain:"Fotosintesis menggunakan tenaga cahaya untuk menghasilkan glukosa daripada air dan karbon dioksida."}
+ ]},
+ {name:"Bilik Partikel",emoji:"💨",scene:"NOVA terperangkap dalam bilik zarah misteri. Bentuk dan pergerakan zarah menentukan laluan keluar.",digit:"9",tasks:[
+ {type:"single",q:"Zarah yang berjauhan dan bergerak bebas secara rawak menunjukkan keadaan jirim yang mana?",options:["Pepejal","Cecair","Gas","Semua keadaan"],correct:[2],hint:"Bandingkan jarak zarah bagi pepejal, cecair dan gas.",explain:"Zarah gas berjauhan dan bergerak bebas secara rawak."},
+ {type:"order",q:"Susun perubahan keadaan jirim apabila ais dipanaskan sehingga menjadi wap air.",options:["Wap air (gas)","Ais (pepejal)","Air (cecair)"],correct:[1,2,0],hint:"Perubahan berlaku daripada keadaan asal ais kepada air dan akhirnya wap.",explain:"Apabila dipanaskan: ais (pepejal) melebur menjadi air (cecair), kemudian mengewap menjadi wap air (gas)."},
+ {type:"multi",q:"Pilih DUA pernyataan yang benar tentang jirim.",options:["Cecair mempunyai isi padu tetap","Gas mempunyai bentuk tetap","Pepejal mempunyai bentuk tetap","Gas mempunyai isi padu tetap"],correct:[0,2],hint:"Kenal pasti keadaan jirim yang mengekalkan bentuk dan/atau isi padu.",explain:"Cecair mempunyai isi padu tetap dan mengikut bentuk bekas; pepejal mempunyai bentuk tetap."}
+ ]},
+ {name:"Stesen Udara",emoji:"🌬️",scene:"Pengudaraan makmal terputus. Tiga cabaran mengenai udara perlu diselesaikan bagi mengaktifkan penapis.",digit:"4",tasks:[
+ {type:"single",q:"Gas manakah dalam udara diperlukan untuk respirasi manusia?",options:["Oksigen","Nitrogen","Karbon dioksida","Argon"],correct:[0],hint:"Gas ini disedut dan digunakan dalam proses respirasi sel.",explain:"Oksigen diperlukan oleh sel manusia untuk respirasi."},
+ {type:"multi",q:"Pilih DUA tindakan yang dapat membantu mengurangkan pencemaran udara.",options:["Berkongsi kenderaan ke sekolah","Membakar sampah secara terbuka","Menggunakan pengangkutan awam","Membiarkan enjin kereta hidup tanpa perlu"],correct:[0,2],hint:"Pilih amalan yang dapat mengurangkan pelepasan daripada kenderaan.",explain:"Berkongsi kenderaan dan menaiki pengangkutan awam dapat mengurangkan bilangan kenderaan di jalan raya."},
+ {type:"single",q:"NOVA memaparkan carta udara kering: kira-kira 78% gas X dan 21% gas Y. Apakah gas X?",options:["Oksigen","Karbon dioksida","Nitrogen","Wap air"],correct:[2],hint:"Ingat gas paling banyak dalam komposisi udara kering.",explain:"Nitrogen membentuk kira-kira 78% udara kering, manakala oksigen kira-kira 21%."}
+ ]},
+ {name:"Laluan Cahaya",emoji:"🪞",scene:"Sensor pintu terakhir menggunakan pantulan dan pembiasan. Kamu perlu mengarahkan cahaya ke penerima.",digit:"5",tasks:[
+ {type:"single",q:"Sudut tuju cahaya pada cermin rata ialah 35° dari garis normal. Berapakah sudut pantulan?",options:["35°","55°","70°","90°"],correct:[0],hint:"Hukum pantulan membandingkan dua sudut yang diukur dari garis normal.",explain:"Hukum pantulan menyatakan sudut tuju sama dengan sudut pantulan, jadi sudut pantulan 35°."},
+ {type:"multi",q:"Pilih DUA pernyataan yang benar tentang cahaya.",options:["Cahaya merambat lurus dalam medium seragam","Cahaya sentiasa membelok apabila melalui udara sahaja","Pembiasan boleh berlaku apabila cahaya memasuki medium berbeza","Sudut pantulan sentiasa dua kali sudut tuju"],correct:[0,2],hint:"Bezakan rambatan lurus, pembiasan dan pantulan.",explain:"Cahaya merambat lurus dalam medium seragam dan boleh dibiaskan apabila merentasi sempadan dua medium berbeza."},
+ {type:"single",q:"Sebatang pensel di dalam segelas air kelihatan bengkok pada sempadan air-udara. Apakah fenomena yang menerangkannya?",options:["Pantulan cahaya","Pembiasan cahaya","Penyerakan cahaya","Penyerapan cahaya"],correct:[1],hint:"Fikirkan perubahan arah cahaya ketika melalui air dan udara.",explain:"Pembiasan menyebabkan arah cahaya berubah apabila cahaya merentasi air dan udara, lalu pensel kelihatan bengkok."}
+ ]}
+];
+const $=id=>document.getElementById(id);
+let mi=0,ti=0,player="",digits=[],selection=[],order=[],passed=false,attempts=0,totalScore=0,missionScores=[0,0,0,0,0],wrongCount=0;
+function screen(id){["startPane","gamePane","digitPane","vaultPane","reviewPane","endPane"].forEach(x=>$(x).classList.toggle("hide",x!==id))}
+function task(){return missions[mi].tasks[ti]}
+function draw(){
+passed=false;selection=[];attempts=0;const m=missions[mi],t=task();
+$("position").textContent=`MISI ${mi+1}/5 · CABARAN ${ti+1}/3`;
+$("progressLabel").textContent=`${mi*3+ti} / 15 selesai`;
+$("liveScore").textContent=`⭐ ${totalScore}/30`;
+$("fill").style.width=`${(mi*3+ti)/15*100}%`;
+$("title").textContent=`Misi ${mi+1}: ${m.name}`;$("scene").textContent=m.scene;$("emoji").textContent=m.emoji;$("prompt").textContent=t.q;
+$("taskType").textContent=t.type==="single"?"PILIH SATU JAWAPAN":t.type==="multi"?"PILIH SEMUA JAWAPAN BETUL": "SUSUN LANGKAH MENGIKUT URUTAN";
+$("hint").textContent=t.hint;$("hintBox").open=false;$("feedback").className="feedback hide";$("verify").classList.remove("hide");$("advance").classList.add("hide");
+$("digits").textContent=digits.length?"Digit diperoleh: "+digits.join(" · "):"Digit keselamatan akan diberikan selepas setiap 3 cabaran.";
+order=t.options.map((_,j)=>j);paint();
+}
+function paint(){
+const t=task(),area=$("answerArea");area.innerHTML="";
+if(t.type==="order"){
+order.forEach((id,index)=>{const row=document.createElement("div");row.className="orderItem";const txt=document.createElement("div");txt.textContent=(index+1)+". "+t.options[id];row.append(txt);
+for(let delta of [-1,1]){const btn=document.createElement("button");btn.className="small";btn.textContent=delta<0?"↑":"↓";btn.setAttribute("aria-label",delta<0?"Alih ke atas":"Alih ke bawah");btn.disabled=passed||(index+delta<0||index+delta>=order.length);btn.addEventListener("click",()=>{[order[index],order[index+delta]]=[order[index+delta],order[index]];paint()});row.append(btn)}area.append(row)});
+}else{
+const wrap=document.createElement("div");wrap.className="choices";
+t.options.forEach((s,k)=>{let b=document.createElement("button");b.className="choice"+(selection.includes(k)?" selected":"");b.textContent=String.fromCharCode(65+k)+". "+s;b.disabled=passed;b.setAttribute("aria-pressed",String(selection.includes(k)));b.onclick=()=>{if(t.type==="single")selection=[k];else selection=selection.includes(k)?selection.filter(x=>x!==k):[...selection,k];paint()};wrap.append(b)});
+area.append(wrap)
+}}
+function completeTask(points, explanation, succeeded){
+ passed=true;totalScore+=points;missionScores[mi]+=points;
+ const box=$("feedback");box.className="feedback "+(succeeded?"ok":"no");
+ box.textContent=(succeeded?"✅ Tepat! ":"📘 Percubaan tamat. Jawapan ditunjukkan supaya kamu boleh belajar dan meneruskan misi. ")+explanation+" Markah cabaran: "+points+"/2.";
+ $("verify").classList.add("hide");$("advance").classList.remove("hide");
+ $("advance").textContent=ti===2?"Dapatkan digit rahsia →":"Cabaran seterusnya →";
+ $("liveScore").textContent=`⭐ ${totalScore}/30`;
+ paint();
+}
+$("verify").onclick=()=>{
+ const t=task(),box=$("feedback");box.classList.remove("hide");
+ if(t.type!=="order"&&selection.length===0){box.className="feedback no";box.textContent="Pilih jawapan terlebih dahulu. Tiada markah ditolak.";return}
+ attempts++;
+ const actual=t.type==="order"?order:selection;
+ const correct=actual.length===t.correct.length&&(t.type==="order"?actual.join(",")===t.correct.join(","):[...actual].sort().join(",")===[...t.correct].sort().join(","));
+ if(correct){const pts=attempts===1?2:attempts===2?1:0;completeTask(pts,t.explain,true);return}
+ wrongCount++;
+ if(attempts>=3){
+   const correctText=t.type==="order"?t.correct.map((id,i)=>(i+1)+". "+t.options[id]).join(" → "):t.correct.map(id=>t.options[id]).join("; ");
+   completeTask(0,"Jawapan: "+correctText+". "+t.explain,false);
+   return;
+ }
+ box.className="feedback no";
+ box.textContent="Belum tepat. Kamu masih mempunyai "+(3-attempts)+" percubaan. "+(attempts===1?"Petunjuk boleh dibuka tanpa penalti.":"Buka petunjuk dan rujuk buku teks sebelum mencuba lagi.");
+};
+$("advance").onclick=()=>{if(ti<2){ti++;draw()}else{digits.push(missions[mi].digit);$("systemMessage").textContent="Kamu telah melengkapkan ketiga-tiga cabaran Misi "+(mi+1)+": "+missions[mi].name+".";$("digitValue").textContent=missions[mi].digit;screen("digitPane")}};
+$("continue").onclick=()=>{if(mi<4){mi++;ti=0;draw();screen("gamePane")}else screen("vaultPane")};
+$("backToCodes").onclick=()=>{
+ const holder=$("codeReview");holder.innerHTML="";
+ missions.forEach((m,j)=>{const row=document.createElement("div");row.className="orderItem";const title=document.createElement("div");title.textContent=`Misi ${j+1}: ${m.name}`;const value=document.createElement("strong");value.className="token";value.textContent=digits[j]||"–";row.append(title,value);holder.append(row)});
+ screen("reviewPane");
+};
+$("returnToVault").onclick=()=>screen("vaultPane");
+$("unlock").onclick=()=>{const b=$("vaultFeedback");if($("code").value.trim()===digits.join("")){
+ $("certificate").textContent=`Agen: ${player} | Tarikh: ${new Date().toLocaleDateString("ms-MY")} | Status: BERJAYA | 15/15 cabaran dilalui`;
+ $("scoreFinal").textContent=`⭐ Markah keseluruhan: ${totalScore}/30 (${Math.round(totalScore/30*100)}%)`;
+ $("scoreInfo").textContent=`Jawapan salah semasa permainan: ${wrongCount} kali. Sistem memberi 2 markah untuk betul pada percubaan pertama, 1 markah pada percubaan kedua dan 0 markah pada percubaan ketiga atau selepas tiga jawapan salah.`;
+ const list=$("scoreBreakdown");list.innerHTML="";
+ missions.forEach((m,j)=>{const p=document.createElement("p");p.textContent=`Misi ${j+1} — ${m.name}: ${missionScores[j]}/6`;list.append(p)});
+ screen("endPane")
+}else{b.className="feedback no";b.textContent="Kod belum tepat. Semak semula urutan digit yang kamu kumpulkan."}};
+$("start").onclick=()=>{player=$("player").value.trim()||"Agen Sains";mi=0;ti=0;digits=[];totalScore=0;missionScores=[0,0,0,0,0];wrongCount=0;draw();screen("gamePane")};
+$("restart").onclick=()=>{$("code").value="";screen("startPane")};
+</script></body></html>
